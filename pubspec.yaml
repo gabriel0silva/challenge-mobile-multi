@@ -13,6 +13,7 @@ dependencies:
 
   cupertino_icons: ^1.0.6
   dio: ^5.8.0+1
+  flutter_svg: ^2.0.17
 
 dev_dependencies:
   flutter_test:
@@ -28,68 +29,68 @@ flutter:
     - assets/images/
 
   fonts:
-    - family: Monstserrat-Thin
+    - family: Montserrat-Thin
       fonts:
-        - asset: fonts/Monstserrat-Thin.ttf
-    - family: Monstserrat-ThinItalic
+        - asset: fonts/Montserrat-Thin.ttf
+    - family: Montserrat-ThinItalic
       fonts:
-        - asset: fonts/Monstserrat-ThinItalic.ttf
+        - asset: fonts/Montserrat-ThinItalic.ttf
 
-    - family: Monstserrat-ExtraLight
+    - family: Montserrat-ExtraLight
       fonts:
-        - asset: fonts/Monstserrat-ExtraLight.ttf
-    - family: Monstserrat-ExtraLightItalic
+        - asset: fonts/Montserrat-ExtraLight.ttf
+    - family: Montserrat-ExtraLightItalic
       fonts:
-        - asset: fonts/Monstserrat-ExtraLightItalic.ttf
+        - asset: fonts/Montserrat-ExtraLightItalic.ttf
 
-    - family: Monstserrat-Light
+    - family: Montserrat-Light
       fonts:
-        - asset: fonts/Monstserrat-Light.ttf
-    - family: Monstserrat-LightItalic
+        - asset: fonts/Montserrat-Light.ttf
+    - family: Montserrat-LightItalic
       fonts:
-        - asset: fonts/Monstserrat-LightItalic.ttf
+        - asset: fonts/Montserrat-LightItalic.ttf
 
-    - family: Monstserrat-Regular
+    - family: Montserrat-Regular
       fonts:
-        - asset: fonts/Monstserrat-Regular.ttf
-    - family: Monstserrat-Italic
+        - asset: fonts/Montserrat-Regular.ttf
+    - family: Montserrat-Italic
       fonts:
-        - asset: fonts/Monstserrat-Italic.ttf
+        - asset: fonts/Montserrat-Italic.ttf
 
-    - family: Monstserrat-Medium
+    - family: Montserrat-Medium
       fonts:
-        - asset: fonts/Monstserrat-Medium.ttf
-    - family: Monstserrat-MediumItalic
+        - asset: fonts/Montserrat-Medium.ttf
+    - family: Montserrat-MediumItalic
       fonts:
-        - asset: fonts/Monstserrat-MediumItalic.ttf
+        - asset: fonts/Montserrat-MediumItalic.ttf
 
-    - family: Monstserrat-SemiBold
+    - family: Montserrat-SemiBold
       fonts:
-        - asset: fonts/Monstserrat-SemiBold.ttf
-    - family: Monstserrat-SemiBoldItalic
+        - asset: fonts/Montserrat-SemiBold.ttf
+    - family: Montserrat-SemiBoldItalic
       fonts:
-        - asset: fonts/Monstserrat-SemiBoldItalic.ttf
+        - asset: fonts/Montserrat-SemiBoldItalic.ttf
 
-    - family: Monstserrat-Bold
+    - family: Montserrat-Bold
       fonts:
-        - asset: fonts/Monstserrat-Bold.ttf
-    - family: Monstserrat-BoldItalic
+        - asset: fonts/Montserrat-Bold.ttf
+    - family: Montserrat-BoldItalic
       fonts:
-        - asset: fonts/Monstserrat-BoldItalic.ttf
+        - asset: fonts/Montserrat-BoldItalic.ttf
 
-    - family: Monstserrat-ExtraBold
+    - family: Montserrat-ExtraBold
       fonts:
-        - asset: fonts/Monstserrat-ExtraBold.ttf
-    - family: Monstserrat-ExtraBoldItalic
+        - asset: fonts/Montserrat-ExtraBold.ttf
+    - family: Montserrat-ExtraBoldItalic
       fonts:
-        - asset: fonts/Monstserrat-ExtraBoldItalic.ttf
+        - asset: fonts/Montserrat-ExtraBoldItalic.ttf
 
-    - family: Monstserrat-Black
+    - family: Montserrat-Black
       fonts:
-        - asset: fonts/Monstserrat-Black.ttf
-    - family: Monstserrat-BlackItalic
+        - asset: fonts/Montserrat-Black.ttf
+    - family: Montserrat-BlackItalic
       fonts:
-        - asset: fonts/Monstserrat-BlackItalic.ttf
+        - asset: fonts/Montserrat-BlackItalic.ttf
   
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

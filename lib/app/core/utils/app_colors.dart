@@ -9,7 +9,7 @@ class AppColors {
   static const Color yellow1 = Color(0xFFFFC700);
   static const Color gray = Color(0xFFADADAD);
   static const Color gray1 = Color(0xFFAEAEAE);
-  static Color blackOppacity = const Color(0xFF000000).withOpacity(0.5);
+  static Color blackOppacity = const Color(0x80000000);
 
   // backgroud gradient
   static const Color gadientPurple50 = Color(0xFF121443);
