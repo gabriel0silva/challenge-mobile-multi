@@ -9,6 +9,7 @@ class AppColors {
   static const Color yellow1 = Color(0xFFFFC700);
   static const Color gray = Color(0xFFADADAD);
   static const Color gray1 = Color(0xFFAEAEAE);
+  static const Color black = Color(0xFF000000);
   static Color blackOppacity = const Color(0x80000000);
 
   // backgroud gradient
@@ -19,4 +20,5 @@ class AppColors {
 
   static const Color gadientBlue50 = Color(0xFF005BB0);
   static const Color gadientBlue100 = Color(0xFF0084FF);
+  static const LinearGradient gradientBlue = LinearGradient(colors: [AppColors.gadientBlue100, AppColors.gadientBlue50]);
 }
