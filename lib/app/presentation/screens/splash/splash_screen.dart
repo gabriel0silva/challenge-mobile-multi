@@ -1,10 +1,10 @@
 import 'package:challenge_mobile_multi/app/core/utils/app_assets.dart';
+import 'package:challenge_mobile_multi/app/di/injection.dart';
 import 'package:challenge_mobile_multi/app/presentation/viewmodels/splash_screen_viewmodel.dart';
 import 'package:challenge_mobile_multi/app/presentation/widgets/default_scaffold.dart';
 import 'package:challenge_mobile_multi/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,12 +14,13 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  late final SplashScreenViewModel vm;
 
   @override
   void initState() {
     super.initState();
-    final vm = context.read<SplashScreenViewModel>();
-    vm.initApp(() {
+    vm = getIt<SplashScreenViewModel>();
+    vm.init(() {
       Navigator.pushReplacementNamed(context, AppRoutes.home);
     });
   }
@@ -37,3 +38,4 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
+

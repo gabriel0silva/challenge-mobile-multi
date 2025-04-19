@@ -1,23 +1,9 @@
+import 'package:challenge_mobile_multi/app/data/models/movie_details_model.dart';
+import 'package:challenge_mobile_multi/app/data/models/movies_model.dart';
 
-class MoviesRepository {
-  MoviesRepository._();
-
-  static final MoviesRepository _instance = MoviesRepository._();
-  factory MoviesRepository() => MoviesRepository._instance;
-
-
-  Future<dynamic> fetchTopRatedMovies() async {
-
-  }
-
-  Future<dynamic> fecthNowCineMovies() async {
-
-  }
-
-  Future<dynamic> fecthShortlyMovies() async {
-
-  }
-
-  // Future<List<Movie>> getTopRatedMovies();
-  // Future<List<Movie>> fecthNowCineMovies();in theaters
+abstract interface class MoviesRepository {
+  Future<MoviesModel?> fetchTopRatedMovies();
+  Future<MoviesModel?> fetchUpComingMovies({int page = 1});
+  Future<MoviesModel?> fetchNowPlayingMovies({int page = 1});
+  Future<MovieDetailsModel?> fetchDetailsMovie({required int movieId});
 }

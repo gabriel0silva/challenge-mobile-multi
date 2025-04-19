@@ -1,0 +1,31 @@
+
+class Countries {
+  static const Map<String, dynamic> countries = {
+    'US': {'pt': 'Estados Unidos', 'en': 'United States'},
+    'BR': {'pt': 'Brasil', 'en': 'Brazil'},
+    'GB': {'pt': 'Reino Unido', 'en': 'United Kingdom'},
+    'FR': {'pt': 'França', 'en': 'France'},
+    'DE': {'pt': 'Alemanha', 'en': 'Germany'},
+    'IT': {'pt': 'Itália', 'en': 'Italy'},
+    'JP': {'pt': 'Japão', 'en': 'Japan'},
+    'KR': {'pt': 'Coreia do Sul', 'en': 'South Korea'},
+    'CN': {'pt': 'China', 'en': 'China'},
+    'IN': {'pt': 'Índia', 'en': 'India'},
+    'CA': {'pt': 'Canadá', 'en': 'Canada'},
+    'AU': {'pt': 'Austrália', 'en': 'Australia'},
+    'MX': {'pt': 'México', 'en': 'Mexico'},
+    'ES': {'pt': 'Espanha', 'en': 'Spain'},
+    'RU': {'pt': 'Rússia', 'en': 'Russia'},
+    'AR': {'pt': 'Argentina', 'en': 'Argentina'},
+    'SE': {'pt': 'Suécia', 'en': 'Sweden'},
+    'DK': {'pt': 'Dinamarca', 'en': 'Denmark'},
+    'NL': {'pt': 'Países Baixos', 'en': 'Netherlands'},
+    'BE': {'pt': 'Bélgica', 'en': 'Belgium'},
+    'CH': {'pt': 'Suíça', 'en': 'Switzerland'},
+    'NZ': {'pt': 'Nova Zelândia', 'en': 'New Zealand'},
+    'ZA': {'pt': 'África do Sul', 'en': 'South Africa'},
+    'NO': {'pt': 'Noruega', 'en': 'Norway'},
+    'PL': {'pt': 'Polônia', 'en': 'Poland'},
+    'IE': {'pt': 'Irlanda', 'en': 'Ireland'},
+  };
+}

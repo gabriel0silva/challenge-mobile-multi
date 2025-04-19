@@ -9,16 +9,16 @@ class AppColors {
   static const Color yellow1 = Color(0xFFFFC700);
   static const Color gray = Color(0xFFADADAD);
   static const Color gray1 = Color(0xFFAEAEAE);
+  static const Color gray3 = Color(0xFF999999);
   static const Color black = Color(0xFF000000);
-  static Color blackOppacity = const Color(0x80000000);
+  static const Color blackOppacity = Color(0x80000000);
 
-  // backgroud gradient
-  static const Color gadientPurple50 = Color(0xFF121443);
-  static const Color gadientPurple100 = Color(0xFF311448);
-  static const Color gadientPurple150 = Color(0xFF2D0336);
-  static const Color gadientPurple200 = Color(0xFF2D0032);
+  static const Color purple = Color(0xB3A800CA);
+  static const Color blue2 = Color(0xFF00249A);
+  static const Color blue1 = Color(0xFF005BB0);
+  static const Color blue = Color(0xFF0084FF);
 
-  static const Color gadientBlue50 = Color(0xFF005BB0);
-  static const Color gadientBlue100 = Color(0xFF0084FF);
-  static const LinearGradient gradientBlue = LinearGradient(colors: [AppColors.gadientBlue100, AppColors.gadientBlue50]);
+  static const LinearGradient gradientBlue = LinearGradient(colors: [AppColors.blue, AppColors.blue1]);
+  static const LinearGradient gradientPurple = LinearGradient(colors: [AppColors.purple, AppColors.blue2], begin: Alignment.topCenter, end: Alignment.bottomCenter);
+  static const LinearGradient gradientwhite = LinearGradient(colors: [AppColors.white, AppColors.gray3]);
 }

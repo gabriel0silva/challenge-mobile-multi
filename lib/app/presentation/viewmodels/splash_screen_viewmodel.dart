@@ -1,18 +1,17 @@
-import 'package:challenge_mobile_multi/app/presentation/viewmodels/home_screen_viewmodel.dart';
-import 'package:challenge_mobile_multi/app/services/app_initializer.dart';
-import 'package:flutter/material.dart';
+import 'package:challenge_mobile_multi/app/core/init/app_initializer.dart';
+import 'package:challenge_mobile_multi/app/presentation/viewmodels/home_viewmodel.dart';
 
-class SplashScreenViewModel extends ChangeNotifier {
+class SplashScreenViewModel {
+  final AppInitializer initializer;
+  final HomeViewModel homeViewModel;
+
   SplashScreenViewModel({
     required this.initializer,
-    required this.homeScreenVM,
+    required this.homeViewModel,
   });
 
-  final AppInitializer initializer;
-  final HomeScreenViewmodel homeScreenVM;
-
-  Future<void> initApp(Function onDone) async {
-    await initializer.initializeApp(homeScreenVM);
+  Future<void> init(Function onDone) async {
+    await initializer.initializeApp(homeViewModel);
     onDone();
   }
 }

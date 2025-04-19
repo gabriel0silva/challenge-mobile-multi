@@ -1,10 +1,14 @@
 {
-    "@@locale": "pt",
+    "locale": "pt-BR",
     "language": "Idioma",
     "portuguese": "Português",
     "english": "Inglês",
     "in_theaters": "Nos cinemas",
     "shortly": "Em breve",
     "votes": "votos",
-    "official_page": "Página oficial"
+    "official_page": "Página oficial",
+    "overview": "Resumo",
+    "release_date": "Data lançamento",
+    "origin_country": "País de origem",
+    "budget": "Orçamento"
 }

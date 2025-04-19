@@ -1,10 +1,12 @@
+import 'package:challenge_mobile_multi/app/core/constants/data.dart';
 import 'package:challenge_mobile_multi/app/core/theme/app_theme.dart';
-import 'package:challenge_mobile_multi/app/presentation/viewmodels/home_screen_viewmodel.dart';
-import 'package:challenge_mobile_multi/app/presentation/viewmodels/splash_screen_viewmodel.dart';
+import 'package:challenge_mobile_multi/app/di/injection.dart';
+import 'package:challenge_mobile_multi/app/presentation/viewmodels/details_viewmodel.dart';
+import 'package:challenge_mobile_multi/app/presentation/viewmodels/home_viewmodel.dart';
 import 'package:challenge_mobile_multi/app/presentation/viewmodels/locale_viewmodel.dart';
 import 'package:challenge_mobile_multi/app/routes/app_router.dart';
 import 'package:challenge_mobile_multi/app/routes/app_routes.dart';
-import 'package:challenge_mobile_multi/app/services/app_initializer.dart';
+import 'package:challenge_mobile_multi/app/services/translation_service.dart';
 import 'package:challenge_mobile_multi/l10n/app_localizations.dart';
 import 'package:challenge_mobile_multi/l10n/l10n.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +18,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _fetchMediaQueryInformations(context);
     return MultiProvider(
       providers: [
-        Provider(create: (_) => AppInitializer()),
-        ChangeNotifierProvider(create: (_) => HomeScreenViewmodel()),
-        ChangeNotifierProvider(
-          create: (context) => SplashScreenViewModel(initializer: AppInitializer(), homeScreenVM: context.read<HomeScreenViewmodel>()),
-        ),
-        ChangeNotifierProvider(create: (_) => LocaleViewModel()),
+        ChangeNotifierProvider(create: (_) => getIt<HomeViewModel>()),
+        ChangeNotifierProvider(create: (_) => getIt<LocaleViewModel>()),
+        ChangeNotifierProvider(create: (_) => getIt<DetailsViewModel>()),
       ],
       child: Consumer<LocaleViewModel>(
         builder: (context, vm, _) {
@@ -41,9 +41,20 @@ class MyApp extends StatelessWidget {
             initialRoute: AppRoutes.splash,
             theme: AppTheme.themeData,
             routes: AppRouter.appRoutes,
+            builder: (context, child) {
+              final l10n = AppLocalizations.of(context);
+              getIt<TranslationService>().load(l10n);
+              return child!;
+            },
           );
-        }
+        },
       ),
     );
+  }
+  void _fetchMediaQueryInformations(context) {
+    MediaQueryData mediaQueryData = MediaQueryData.fromView(View.of(context));
+    Data.height = mediaQueryData.size.height;
+    Data.width = mediaQueryData.size.width;
+    Data.scale = MediaQuery.textScalerOf(context);
   }
 }

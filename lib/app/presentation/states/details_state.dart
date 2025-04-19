@@ -1,4 +1,4 @@
-enum HomeState {
+enum DetailsState {
   initial,
   loading,
   success,

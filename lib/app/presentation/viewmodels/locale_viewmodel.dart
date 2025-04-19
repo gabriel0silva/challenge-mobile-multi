@@ -11,4 +11,15 @@ class LocaleViewModel extends ChangeNotifier {
     _locale = locale;
     notifyListeners();
   }
+
+  String get apiLanguageParam {
+    switch (_locale.languageCode) {
+      case 'pt':
+        return 'pt-BR';
+      case 'en':
+        return 'en-US';
+      default:
+        return 'pt-BR';
+    }
+  }
 }
