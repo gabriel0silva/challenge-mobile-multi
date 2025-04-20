@@ -1,3 +1,5 @@
+import 'package:challenge_mobile_multi/app/domain/entities/trailer_result.dart';
+
 class MovieDetailsModel {
   final String backdropPath;
   final int budget;
@@ -14,8 +16,11 @@ class MovieDetailsModel {
   final String title;
   final bool video;
   double voteAverage;
+  final TrailerResult trailer;
   final int voteCount;
-  final String certification;
+  String certification;
+  final String homepage;
+
 
   MovieDetailsModel({
     required this.backdropPath,
@@ -33,17 +38,17 @@ class MovieDetailsModel {
     required this.title,
     required this.video,
     required this.voteAverage,
+    required this.trailer,
     required this.voteCount,
     required this.certification,
+    required this.homepage,
   });
 
-  factory MovieDetailsModel.fromJson(Map<String, dynamic> json, String certification) {
+  factory MovieDetailsModel.fromJson(Map<String, dynamic> json, String certification, TrailerResult trailer) {
     return MovieDetailsModel(
       backdropPath: json['backdrop_path'] ?? '',
       budget: json['budget'] ?? 0,
-      genres: (json['genres'] as List<dynamic>)
-          .map((genre) => Genre.fromJson(genre))
-          .toList(),
+      genres: (json['genres'] as List<dynamic>).map((genre) => Genre.fromJson(genre)).toList(),
       originCountries: List<String>.from(json['origin_country'] ?? []),
       originalTitle: json['original_title'] ?? '',
       overview: json['overview'] ?? '',
@@ -52,8 +57,10 @@ class MovieDetailsModel {
       title: json['title'] ?? '',
       video: json['video'] ?? false,
       voteAverage: (json['vote_average'] ?? 0).toDouble(),
+      trailer: trailer,
       voteCount: json['vote_count'] ?? 0,
       certification: certification,
+      homepage: json['homepage'] ?? '',
     );
   }
 
@@ -73,8 +80,10 @@ class MovieDetailsModel {
     String? title,
     bool? video,
     double? voteAverage,
+    TrailerResult? trailer,
     int? voteCount,
     String? certification,
+    String? homepage,
   }) {
     return MovieDetailsModel(
       backdropPath: backdropPath ?? this.backdropPath,
@@ -92,8 +101,10 @@ class MovieDetailsModel {
       title: title ?? this.title,
       video: video ?? this.video,
       voteAverage: voteAverage ?? this.voteAverage,
+      trailer: trailer ?? this.trailer,
       voteCount: voteCount ?? this.voteCount,
       certification: certification ?? this.certification,
+      homepage: homepage ?? this.homepage,
     );
   }
 }

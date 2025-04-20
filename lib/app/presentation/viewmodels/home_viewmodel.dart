@@ -20,6 +20,8 @@ class HomeViewModel extends ChangeNotifier {
   HomeState state = HomeState.initial;
 
 
+  late TabController tabController;
+
   List<Movie> topRatedMovies = [];
   List<Movie> nowPlayingdMovies = [];
   List<Movie> upComingMovies = [];
@@ -46,9 +48,17 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void initTabController(TickerProvider vsync) {
+    tabController = TabController(
+      length: 2,
+      vsync: vsync,
+    );
+  }
+
   Future<void> init() async {
     try {
       selectedValue = translation.translate('portuguese');
+      
 
       final isSuccess = await _loadData();
 
@@ -60,7 +70,25 @@ class HomeViewModel extends ChangeNotifier {
       
     } catch (e) {
       emitState(HomeState.failure);
-      debugPrint('Error loading movies: $e');
+      debugPrint('Error init() => $e');
+    }
+  }
+
+  Future<void> reloadMovies() async {
+    try {
+      emitState(HomeState.loading);
+
+      final isSuccess = await _loadData();
+
+      if (isSuccess) {
+        emitState(HomeState.success);
+      } else {
+        emitState(HomeState.failure);
+      }
+      
+    } catch (e) {
+      emitState(HomeState.failure);
+      debugPrint('Error reloadMovies() =>: $e');
     }
   }
 

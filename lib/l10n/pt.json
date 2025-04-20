@@ -3,12 +3,16 @@
     "language": "Idioma",
     "portuguese": "Português",
     "english": "Inglês",
-    "in_theaters": "Nos cinemas",
-    "shortly": "Em breve",
+    "now_playing": "Nos cinemas",
+    "up_comming": "Em breve",
     "votes": "votos",
     "official_page": "Página oficial",
     "overview": "Resumo",
     "release_date": "Data lançamento",
     "origin_country": "País de origem",
-    "budget": "Orçamento"
+    "budget": "Orçamento",
+    "try_again": "Tentar novamente",
+    "loading": "Carregando...",
+    "loading_movies": "Carregando filmes...",
+    "loading_details": "Carregando detalhes..."
 }

@@ -10,6 +10,7 @@ class AppColors {
   static const Color gray = Color(0xFFADADAD);
   static const Color gray1 = Color(0xFFAEAEAE);
   static const Color gray3 = Color(0xFF999999);
+  static const Color gray4 = Color(0xFFa08bae);
   static const Color black = Color(0xFF000000);
   static const Color blackOppacity = Color(0x80000000);
 
@@ -21,4 +22,10 @@ class AppColors {
   static const LinearGradient gradientBlue = LinearGradient(colors: [AppColors.blue, AppColors.blue1]);
   static const LinearGradient gradientPurple = LinearGradient(colors: [AppColors.purple, AppColors.blue2], begin: Alignment.topCenter, end: Alignment.bottomCenter);
   static const LinearGradient gradientwhite = LinearGradient(colors: [AppColors.white, AppColors.gray3]);
+
+  static const Color green = Color(0xFF008f30);
+  static const Color blue3 = Color(0xFF00c9fd);
+  static const Color yellow3 = Color(0xFFfecc02);
+  static const Color orange = Color(0xFFff6601);
+  static const Color red = Color(0xFFfe0100);
 }

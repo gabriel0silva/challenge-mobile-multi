@@ -3,12 +3,16 @@
     "language": "Language",
     "portuguese": "Portuguese",
     "english": "English",
-    "in_theaters": "In theaters",
-    "shortly": "Shortly",
+    "now_playing": "Now playing",
+    "up_comming": "Up comming",
     "votes": "votes",
     "official_page": "Official page",
     "overview": "Overview",
     "release_date": "Release date",
     "origin_country": "Origin country",
-    "budget": "Budget"
+    "budget": "Budget",
+    "try_again": "Try again",
+    "loading": "Loading...",
+    "loading_movies": "Loading movies...",
+    "loading_details": "Loading details..."
 }

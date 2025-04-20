@@ -7,6 +7,8 @@ import 'package:challenge_mobile_multi/app/core/utils/app_fonts.dart';
 import 'package:challenge_mobile_multi/app/presentation/states/home_state.dart';
 import 'package:challenge_mobile_multi/app/presentation/viewmodels/home_viewmodel.dart';
 import 'package:challenge_mobile_multi/app/presentation/viewmodels/locale_viewmodel.dart';
+import 'package:challenge_mobile_multi/app/presentation/widgets/default_failure.dart';
+import 'package:challenge_mobile_multi/app/presentation/widgets/default_loading.dart';
 import 'package:challenge_mobile_multi/app/presentation/widgets/default_scaffold.dart';
 import 'package:challenge_mobile_multi/app/routes/app_routes.dart';
 import 'package:challenge_mobile_multi/l10n/app_localizations.dart';
@@ -15,29 +17,41 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+  @override
+  void initState() {
+    context.read<HomeViewModel>().initTabController(this);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Consumer<HomeViewModel>(builder: (context, vm, _) {
-      switch (vm.state) {
-        case HomeState.initial:
-          return const SizedBox();
-        case HomeState.loading:
-          return const CircularProgressIndicator();
-        case HomeState.failure:
-          return const Text('Erro');
-        case HomeState.success:
-          return _successWidget(l10n, vm, context);
-      }
-    });
+    return DefaultScaffold(
+      body: Consumer<HomeViewModel>(builder: (context, vm, _) {
+        switch (vm.state) {
+          case HomeState.initial:
+            return const SizedBox();
+          case HomeState.loading:
+            return DefaultScaffold(body: DefaultLoading(message: l10n.translate('loading_movies')));
+          case HomeState.failure:
+            return DefaultScaffold(body: DefaultFailure(onRetry: () => vm.reloadMovies()));
+          case HomeState.success:
+            return _successWidget(l10n, vm, context);
+        }
+      }),
+    );
   }
 }
 
-DefaultScaffold _successWidget(AppLocalizations l10n, HomeViewModel vm, BuildContext context) {
+Widget _successWidget(AppLocalizations l10n, HomeViewModel vm, BuildContext context) {
   return DefaultScaffold(
     appBar: AppBar(
       toolbarHeight: 70,
@@ -118,11 +132,77 @@ DefaultScaffold _successWidget(AppLocalizations l10n, HomeViewModel vm, BuildCon
       child: Column(
         spacing: 12,
         children: [
-          _carouselMovies(vm)
-
+          _carouselMovies(vm),
+          _listMovies(vm, l10n),
         ],
       ),
     )
+  );
+}
+
+Widget _listMovies(HomeViewModel vm, AppLocalizations l10n) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    child: Column(
+      children: [
+        const SizedBox(height: 12),
+        SizedBox(
+          width: Data.width * 0.6,
+          height: 38,
+          child: TabBar(
+            controller: vm.tabController,
+            physics: const NeverScrollableScrollPhysics(),
+            indicatorSize: TabBarIndicatorSize.tab,
+            dividerColor: Colors.transparent,
+            splashBorderRadius: const BorderRadius.all(
+              Radius.circular(25),
+            ),
+            indicator: const BoxDecoration(
+              gradient: AppColors.gradientBlue,
+              borderRadius: BorderRadius.all(
+                Radius.circular(4),
+              ),
+            ),
+            labelColor: AppColors.white,
+            indicatorPadding: const EdgeInsets.symmetric(horizontal: 4),
+            dividerHeight: 1,
+            unselectedLabelColor: AppColors.white,
+            labelStyle: TextStyle(
+              fontFamily: AppFonts.montserratBold,
+              fontSize: 14,
+            ),
+            padding: EdgeInsets.zero,
+            tabs: [
+              Tab(text: l10n.translate('now_playing')),
+              Tab(text: l10n.translate('up_comming')),
+            ],
+            onTap: (value) {
+              // if (value == 0) {
+              //   widget.controller.getProductAffiliate();
+              // } else {
+              //   widget.controller.getWishListAffiliate();
+              // }
+            },
+          ),
+        ),
+        SizedBox(
+          height: 200,
+          // height: (!widget.controller.tabProductsAndListController!.indexIsChanging && !widget.controller.isLoadingLinks) 
+          //   ? widget.controller.tabProductsAndListController!.index == 0 
+          //     ? widget.controller.heightProducts 
+          //     : widget.controller.heightwishList 
+          //   : 1500,
+          child: TabBarView(
+            physics: const NeverScrollableScrollPhysics(),
+            controller: vm.tabController,
+            children: const [
+              Text('Nos cinemas'),
+              Text('Em breve'),
+            ],
+          ),
+        ),
+      ],
+    ),
   );
 }
 
@@ -148,7 +228,7 @@ Column _carouselMovies(HomeViewModel vm) {
               builder: (context) {
                 return GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacementNamed(context, AppRoutes.details, arguments: movie.id);
+                    Navigator.pushNamed(context, AppRoutes.details, arguments: {'movieId': movie.id, 'movieTitle': movie.title});
                   },
                   child: CachedNetworkImage(
                     imageUrl: movie.posterPath,

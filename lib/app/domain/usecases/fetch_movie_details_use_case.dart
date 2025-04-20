@@ -15,8 +15,8 @@ class FetchMovieDetailsUseCase {
 
   FetchMovieDetailsUseCase(this.movieRepository);
 
-  Future<MovieDetailsModel?> call(int id) async {
-    final movieDetails = await movieRepository.fetchDetailsMovie(movieId: id);
+  Future<MovieDetailsModel?> call(int id, String title) async {
+    final movieDetails = await movieRepository.fetchDetailsMovie(movieId: id, movieTitle: title);
 
     if (movieDetails == null) return null;
 
@@ -31,10 +31,13 @@ class FetchMovieDetailsUseCase {
     final fullCountryName = translatedCountries.join(', ');
 
     return movieDetails.copyWith(
+      certification: movieDetails.certification.contains('L') ? movieDetails.certification : '+${movieDetails.certification}',
       originCountry: fullCountryName,
+      overview: movieDetails.overview.isEmpty ? '[...]' : movieDetails.overview,
       backdropPath: Functions.createValidImageUrl(movieDetails.backdropPath, Data.appConfig.imageSizes.backdrop.original),
+      voteAverage: movieDetails.voteAverage.toOneDecimalDouble(),
       budgetformatted: movieDetails.budget.toDouble().toCurrencyFormat(localeViewModel.locale),
-      releaseDate: localeViewModel.locale.countryCode == 'pt' ? movieDetails.releaseDate.toBrazilianDateFormat() : movieDetails.releaseDate.toUSDateFormat(),
+      releaseDate: localeViewModel.locale.languageCode == 'pt' ? movieDetails.releaseDate.toBrazilianDateFormat() : movieDetails.releaseDate.toUSDateFormat(),
       yearReleaseDate: movieDetails.releaseDate.split('-').first,
       formattedGenres: '${movieDetails.genres.map((genre) => genre.name).join('; ')};',
     );
