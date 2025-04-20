@@ -1,33 +1,42 @@
-import 'package:challenge_mobile_multi/app/core/constants/data.dart';
-import 'package:challenge_mobile_multi/app/core/extensions/extencion_double.dart';
-import 'package:challenge_mobile_multi/app/core/extensions/extencion_string.dart';
-import 'package:challenge_mobile_multi/app/core/utils/functions.dart';
 import 'package:challenge_mobile_multi/app/data/models/movies_model.dart';
 import 'package:challenge_mobile_multi/app/di/injection.dart';
-import 'package:challenge_mobile_multi/app/domain/repositories/movies_repository.dart';
+import 'package:challenge_mobile_multi/app/domain/entities/movies_result.dart';
+import 'package:challenge_mobile_multi/app/domain/usecases/fetch_all_movies_use_case.dart';
+import 'package:challenge_mobile_multi/app/domain/usecases/fetch_now_playing_movies_use_case.dart';
+import 'package:challenge_mobile_multi/app/domain/usecases/fetch_upcoming_movies_use_case.dart';
 import 'package:challenge_mobile_multi/app/presentation/states/home_state.dart';
 import 'package:challenge_mobile_multi/app/presentation/viewmodels/locale_viewmodel.dart';
 import 'package:challenge_mobile_multi/app/services/translation_service.dart';
 import 'package:flutter/material.dart';
 
 class HomeViewModel extends ChangeNotifier {
-  final MoviesRepository repository;
+  final FetchAllMoviesUseCase useCaseAllMovies;
+  final FetchNowPlayingMoviesUseCase useCaseNowPlaying;
+  final FetchUpcomingMoviesUseCase useCaseUpcoming;
 
-  HomeViewModel({required this.repository});
+  HomeViewModel({
+    required this.useCaseAllMovies,
+    required this.useCaseNowPlaying,
+    required this.useCaseUpcoming,
+  });
 
   final LocaleViewModel localeViewModel = getIt<LocaleViewModel>();
 
-  HomeState state = HomeState.initial;
+  HomeState homeState = HomeState.initial;
 
+  bool isLoadingMore = false;
 
   late TabController tabController;
+
+  final ScrollController scrollController = ScrollController();
 
   List<Movie> topRatedMovies = [];
   List<Movie> nowPlayingdMovies = [];
   List<Movie> upComingMovies = [];
 
   int nowPlayingdMoviesTotalPages = 0;
-  int nowPlayingdMoviesCurrentPage = 0;
+  int nowPlayingdMoviesCurrentPage = 1;
+  bool get hasMoreItemsNowPlayingdMovies => nowPlayingdMoviesCurrentPage >= nowPlayingdMoviesCurrentPage;
 
   final topRatedMoviesController = PageController(initialPage: 3);
 
@@ -43,9 +52,48 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void emitState(HomeState newState) {
-    state = newState;
+  void emitHomeState(HomeState newState) {
+    homeState = newState;
     notifyListeners();
+  }
+
+  void emitLoadMore(bool value) {
+    isLoadingMore = value;
+    notifyListeners();
+  }
+
+  Future<void> _loadMoreNowPlayingMovies() async {
+    if (isLoadingMore || nowPlayingdMoviesCurrentPage >= nowPlayingdMoviesTotalPages) return;
+
+    emitLoadMore(true);
+
+    nowPlayingdMoviesCurrentPage++;
+
+    final result = await useCaseNowPlaying(page: nowPlayingdMoviesCurrentPage);
+
+    if (result != null) {
+      nowPlayingdMovies.addAll(result.movies);
+      emitLoadMore(false);
+    }
+  }
+
+  void _initAddListener() {
+    scrollController.addListener(() {
+      _onScroll();
+    });
+  }
+
+  void _onScroll() {
+    if (!scrollController.hasClients) return;
+
+    final maxScroll = scrollController.position.maxScrollExtent;
+    final currentScroll = scrollController.position.pixels;
+
+    const threshold = 0; // distância do final pra começar a carregar
+
+    if (maxScroll - currentScroll <= threshold && !isLoadingMore && hasMoreItemsNowPlayingdMovies) {
+      _loadMoreNowPlayingMovies(); // sua função de carregar mais
+    }
   }
 
   void initTabController(TickerProvider vsync) {
@@ -56,100 +104,70 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<void> init() async {
-    try {
-      selectedValue = translation.translate('portuguese');
-      
+    selectedValue = translation.translate('portuguese');
 
-      final isSuccess = await _loadData();
+    final isSuccess = await _loadData();
 
-      if (isSuccess) {
-        emitState(HomeState.success);
-      } else {
-        emitState(HomeState.failure);
-      }
-      
-    } catch (e) {
-      emitState(HomeState.failure);
-      debugPrint('Error init() => $e');
+    if (isSuccess) {
+      _initAddListener();
+      emitHomeState(HomeState.success);
+    } else {
+      emitHomeState(HomeState.failure);
     }
   }
 
   Future<void> reloadMovies() async {
     try {
-      emitState(HomeState.loading);
+      emitHomeState(HomeState.loading);
 
       final isSuccess = await _loadData();
 
       if (isSuccess) {
-        emitState(HomeState.success);
+        emitHomeState(HomeState.success);
       } else {
-        emitState(HomeState.failure);
+        emitHomeState(HomeState.failure);
       }
       
     } catch (e) {
-      emitState(HomeState.failure);
+      emitHomeState(HomeState.failure);
       debugPrint('Error reloadMovies() =>: $e');
     }
   }
 
-  Future<bool> _loadData() async {
-    final topRatedMoviesData = await _fetchTopRatedMovies();
-    final nowPlayingMoviesData = await _fetchNowPlayingMovies();
-    final upComingMoviesData = await _fetchUpComingMovies();
+  void _fillVariablesForPagination(MoviesModel movies) {
 
-    final isSuccess = _fillOutMovieLists(topRatedMoviesData, nowPlayingMoviesData, upComingMoviesData);
+  }
+
+  Future<bool> _loadData() async {
+    final moviesResult = await useCaseAllMovies();
+
+    final isSuccess = _fillOutMovieLists(moviesResult);
 
     return isSuccess;
   }
  
   Future<void> changeLanguage(String value) async {
-    emitState(HomeState.loading);
+    emitHomeState(HomeState.loading);
 
     final isSuccess = await _loadData();
     selectedValue = value;
 
     if (isSuccess) {
-      emitState(HomeState.success);
+      emitHomeState(HomeState.success);
     } else {
-      emitState(HomeState.failure);
+      emitHomeState(HomeState.failure);
     }
   }
 
-  Future<MoviesModel?> _fetchTopRatedMovies() async {
-    return await repository.fetchTopRatedMovies();
-  }
+  bool _fillOutMovieLists(MoviesResult? moviesResult) {
+    if (moviesResult == null) return false;
 
-  Future<MoviesModel?> _fetchNowPlayingMovies() async {
-    return await repository.fetchNowPlayingMovies();
-  }
+    nowPlayingdMoviesTotalPages = moviesResult.nowPlaying.totalPages;
 
-  Future<MoviesModel?> _fetchUpComingMovies() async {
-    return await repository.fetchUpComingMovies(page: 3);
-  }
+    topRatedMovies = moviesResult.topRated.movies;
+    nowPlayingdMovies = moviesResult.nowPlaying.movies;
+    upComingMovies = moviesResult.upcoming.movies;
 
-  bool _fillOutMovieLists(MoviesModel? topRatedData, MoviesModel? nowPlayingData, MoviesModel? upcomingData) {
-    if (topRatedData != null && nowPlayingData != null && upcomingData != null) {
-      topRatedMovies = _formatMovieList(topRatedData.movies);
-      nowPlayingdMovies = _formatMovieList(nowPlayingData.movies);
-      upComingMovies = _formatMovieList(upcomingData.movies);
-
-      return true;
-    }
-
-    return false;
-  }
-
-  List<Movie> _formatMovieList(List<Movie> movies) {
-    return movies.map((movie) => _formatMovie(movie)).toList();
-  }
-
-  Movie _formatMovie(Movie movie) {
-    movie.releaseDate = localeViewModel.locale.languageCode == 'pt' ? movie.releaseDate.toBrazilianDateFormat() : movie.releaseDate.toUSDateFormat();
-    movie.popularity = movie.popularity.toOneDecimalDouble();
-    movie.voteAverage = movie.voteAverage.toOneDecimalDouble();
-    movie.backdropPath = Functions.createValidImageUrl(movie.backdropPath, Data.appConfig.imageSizes.backdrop.original);
-    movie.posterPath = Functions.createValidImageUrl(movie.posterPath, Data.appConfig.imageSizes.poster.original);
-
-    return movie;
+    return true;
   }
 }

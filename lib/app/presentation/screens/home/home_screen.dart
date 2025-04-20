@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     final l10n = AppLocalizations.of(context);
 
     return  Consumer<HomeViewModel>(builder: (context, vm, _) {
-      switch (vm.state) {
+      switch (vm.homeState) {
         case HomeState.initial:
           return const SizedBox();
         case HomeState.loading:
@@ -129,6 +129,7 @@ Widget _successWidget(AppLocalizations l10n, HomeViewModel vm, BuildContext cont
     ),
     body: SafeArea(
       child: SingleChildScrollView(
+        controller: vm.scrollController,
         child: Column(
           spacing: 12,
           children: [
@@ -143,81 +144,92 @@ Widget _successWidget(AppLocalizations l10n, HomeViewModel vm, BuildContext cont
 
 Widget _listMovies(HomeViewModel vm, AppLocalizations l10n) {
   return Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 16),
-  child: Column(
-    children: [
-      Container(
-        padding: const EdgeInsets.only(top: 12),
-        width: Data.width * 0.6,
-        height: 48,
-        child: TabBar(
-          controller: vm.tabController,
-          physics: const NeverScrollableScrollPhysics(),
-          indicatorSize: TabBarIndicatorSize.tab,
-          dividerColor: Colors.transparent,
-          splashBorderRadius: const BorderRadius.all(
-            Radius.circular(25),
-          ),
-          indicator: const BoxDecoration(
-            gradient: AppColors.gradientBlue,
-            borderRadius: BorderRadius.all(
-              Radius.circular(4),
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    child: Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.only(top: 12),
+          width: Data.width * 0.68,
+          height: 52,
+          child: TabBar(
+            controller: vm.tabController,
+            physics: const NeverScrollableScrollPhysics(),
+            indicatorSize: TabBarIndicatorSize.tab,
+            dividerColor: Colors.transparent,
+            splashBorderRadius: const BorderRadius.all(
+              Radius.circular(25),
             ),
+            indicator: const BoxDecoration(
+              gradient: AppColors.gradientBlue,
+              borderRadius: BorderRadius.all(
+                Radius.circular(4),
+              ),
+            ),
+            labelColor: AppColors.white,
+            indicatorPadding: const EdgeInsets.symmetric(horizontal: 4),
+            dividerHeight: 1,
+            unselectedLabelColor: AppColors.white,
+            labelStyle: TextStyle(
+              fontFamily: AppFonts.montserratBold,
+              fontSize: 14,
+            ),
+            padding: EdgeInsets.zero,
+            tabs: [
+              Tab(text: l10n.translate('now_playing')),
+              Tab(text: l10n.translate('up_comming')),
+            ],
           ),
-          labelColor: AppColors.white,
-          indicatorPadding: const EdgeInsets.symmetric(horizontal: 4),
-          dividerHeight: 1,
-          unselectedLabelColor: AppColors.white,
-          labelStyle: TextStyle(
-            fontFamily: AppFonts.montserratBold,
-            fontSize: 14,
-          ),
-          padding: EdgeInsets.zero,
-          tabs: [
-            Tab(text: l10n.translate('now_playing')),
-            Tab(text: l10n.translate('up_comming')),
-          ],
+        ),
+        const SizedBox(height: 16),
+        AnimatedBuilder(
+          animation: vm.tabController,
+          builder: (context, _) {
+            return IndexedStack(
+              index: vm.tabController.index,
+              children: [
+                tabView(vm.nowPlayingdMovies, vm.isLoadingMore, l10n, context),
+                tabView(vm.upComingMovies, vm.isLoadingMore, l10n, context),
+              ],
+            );
+          },
+        ),
+      ],
+    ),
+  );
+}
+
+Column tabView(List<Movie> movies, bool isLoadingMore, AppLocalizations l10n, BuildContext context) {
+  return Column(
+    children: [
+      Column(
+        children:List.generate(
+          (movies.length / 2).ceil(),
+          (index) {
+            final int firstIndex = index * 2;
+            final int secondIndex = firstIndex + 1;
+
+            final movie1 = movies[firstIndex];
+            final movie2 = secondIndex < movies.length ? movies[secondIndex] : null;
+
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _cardMovie(movie1, l10n, context),
+                if (movie2 != null)...{
+                  _cardMovie(movie2, l10n, context)
+                } else ...{
+                  const SizedBox(width: 0),
+                }
+              ],
+            );
+          },
         ),
       ),
-      const SizedBox(height: 16),
-      AnimatedBuilder(
-        animation: vm.tabController,
-        builder: (context, _) {
-          return IndexedStack(
-            index: vm.tabController.index,
-            children: [
-              Column(
-                children: List.generate(
-                  (vm.nowPlayingdMovies.length / 2).ceil(),
-                  (index) {
-                    final int firstIndex = index * 2;
-                    final int secondIndex = firstIndex + 1;
-
-                    final movie1 = vm.nowPlayingdMovies[firstIndex];
-                    final movie2 = secondIndex < vm.nowPlayingdMovies.length ? vm.nowPlayingdMovies[secondIndex] : null;
-
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _cardMovie(movie1),
-                        if (movie2 != null)...{
-                          _cardMovie(movie2)
-                        } else ...{
-                          const SizedBox(width: 0),
-                        }
-                      ],
-                    );
-                  },
-                ),
-              ),
-              const Text('Em breve'),
-            ],
-          );
-        },
-      ),
-    ],
-  ),
-);
+      if (isLoadingMore)...{
+        const CircularProgressIndicator(color: AppColors.blue),
+      }
+    ]
+  );
 }
 
 Column _carouselMovies(HomeViewModel vm) {
@@ -300,34 +312,121 @@ Column _carouselMovies(HomeViewModel vm) {
   );
 }
 
-Widget _cardMovie(Movie movie) {
+Widget _cardMovie(Movie movie, AppLocalizations l10n, BuildContext context) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 8.0),
-    child: SizedBox(
-      width: Data.width * 0.44,
-      child: AspectRatio(
-        aspectRatio: 0.75,
-        child: CachedNetworkImage(
-          imageUrl: movie.posterPath,
-          fit: BoxFit.cover,
-          imageBuilder: (context, imageProvider) {
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                image: DecorationImage(
-                  image: imageProvider,
-                  fit: BoxFit.cover,
+    child: InkWell(
+      onTap: () {
+        Navigator.pushNamed(context, AppRoutes.details, arguments: {'movieId': movie.id, 'movieTitle': movie.title});
+      },
+      child: SizedBox(
+        width: Data.width * 0.44,
+        child: Column(
+          spacing: 8,
+          children: [
+            Stack(
+              children: [
+                AspectRatio(
+                  aspectRatio: 0.75,
+                  child: CachedNetworkImage(
+                    imageUrl: movie.posterPath,
+                    fit: BoxFit.cover,
+                    imageBuilder: (context, imageProvider) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    },
+                    placeholder: (context, url) => Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                  ),
                 ),
-              ),
-            );
-          },
-          placeholder: (context, url) => Container(
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(12),
+                Positioned(
+                  bottom: 8,
+                  right: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: AppColors.yellow,
+                      borderRadius: BorderRadius.circular(4)
+                    ),
+                    child: Row(
+                      spacing: 2,
+                      children: [
+                        SvgPicture.asset(
+                          AppAssets.svgIconStarCut,
+                        ),
+                        Text(
+                          movie.popularity.toString(),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontFamily: AppFonts.montserratBold,
+                            color: AppColors.white, 
+                          ),
+                        ),
+                      ],
+                    )
+                  ),
+                )
+              ],
             ),
-          ),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 4,
+              children: [
+                Text(
+                  movie.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontFamily: AppFonts.montserratBold,
+                    color: AppColors.white, 
+                  ),
+                ),
+                Row(
+                  spacing: 4,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(
+                          color: AppColors.pink,
+                        )
+                      ),
+                      child: Text(
+                        movie.voteAverage.toString(),
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontFamily: AppFonts.montserratBold,
+                          color: AppColors.white, 
+                        ),
+                      ),
+                    ),
+                    Text(
+                      '${movie.voteCount} ${l10n.translate('votes')}',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontFamily: AppFonts.montserratMedium,
+                        color: AppColors.white, 
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            )
+          ],
         ),
       ),
     ),

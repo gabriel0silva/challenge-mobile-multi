@@ -4,6 +4,10 @@ import 'package:challenge_mobile_multi/app/data/repositories/movies_repository_i
 import 'package:challenge_mobile_multi/app/domain/repositories/auth_repository.dart';
 import 'package:challenge_mobile_multi/app/domain/repositories/movies_repository.dart';
 import 'package:challenge_mobile_multi/app/domain/usecases/fetch_movie_details_use_case.dart';
+import 'package:challenge_mobile_multi/app/domain/usecases/fetch_all_movies_use_case.dart';
+import 'package:challenge_mobile_multi/app/domain/usecases/fetch_now_playing_movies_use_case.dart';
+import 'package:challenge_mobile_multi/app/domain/usecases/fetch_top_rated_movies_use_case.dart';
+import 'package:challenge_mobile_multi/app/domain/usecases/fetch_upcoming_movies_use_case.dart';
 import 'package:challenge_mobile_multi/app/presentation/viewmodels/details_viewmodel.dart';
 import 'package:challenge_mobile_multi/app/presentation/viewmodels/home_viewmodel.dart';
 import 'package:challenge_mobile_multi/app/presentation/viewmodels/locale_viewmodel.dart';
@@ -34,6 +38,18 @@ void initDependencies(SharedPreferences sharedPrefs) {
     homeViewModel: getIt(),
   ));
   getIt.registerLazySingleton(() => FetchMovieDetailsUseCase(getIt<MoviesRepository>()));
-  getIt.registerLazySingleton(() => HomeViewModel(repository: getIt()));
+  getIt.registerLazySingleton(() => FetchTopRatedMoviesUseCase(getIt<MoviesRepository>()));
+  getIt.registerLazySingleton(() => FetchNowPlayingMoviesUseCase(getIt<MoviesRepository>()));
+  getIt.registerLazySingleton(() => FetchUpcomingMoviesUseCase(getIt<MoviesRepository>()));
+  getIt.registerLazySingleton(() => FetchAllMoviesUseCase(
+    topRatedUseCase: getIt<FetchTopRatedMoviesUseCase>(),
+    nowPlayingUseCase: getIt<FetchNowPlayingMoviesUseCase>(),
+    upcomingUseCase: getIt<FetchUpcomingMoviesUseCase>(),
+  ));
+  getIt.registerLazySingleton(() => HomeViewModel(
+    useCaseAllMovies: getIt<FetchAllMoviesUseCase>(),
+    useCaseNowPlaying: getIt<FetchNowPlayingMoviesUseCase>(),
+    useCaseUpcoming: getIt<FetchUpcomingMoviesUseCase>(),
+  ));
   getIt.registerLazySingleton(() => DetailsViewModel(getIt<FetchMovieDetailsUseCase>()));
 }

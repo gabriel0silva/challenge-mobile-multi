@@ -19,6 +19,20 @@ class MoviesModel {
       totalResults: json['total_results'],
     );
   }
+
+  MoviesModel copyWith({
+    int? page,
+    List<Movie>? movies,
+    int? totalPages,
+    int? totalResults,
+  }) {
+    return MoviesModel(
+      page: page ?? this.page,
+      movies: movies ?? this.movies,
+      totalPages: totalPages ?? this.totalPages,
+      totalResults: totalResults ?? this.totalResults,
+    );
+  }
 }
 
 class Movie {
@@ -70,6 +84,40 @@ class Movie {
       video: json['video'],
       voteAverage: (json['vote_average'] as num).toDouble(),
       voteCount: json['vote_count'],
+    );
+  }
+
+  Movie copyWith({
+    bool? adult,
+    String? backdropPath,
+    List<int>? genreIds,
+    int? id,
+    String? originalLanguage,
+    String? originalTitle,
+    String? overview,
+    double? popularity,
+    String? posterPath,
+    String? releaseDate,
+    String? title,
+    bool? video,
+    double? voteAverage,
+    int? voteCount,
+  }) {
+    return Movie(
+      adult: adult ?? this.adult,
+      backdropPath: backdropPath ?? this.backdropPath,
+      genreIds: genreIds ?? this.genreIds,
+      id: id ?? this.id,
+      originalLanguage: originalLanguage ?? this.originalLanguage,
+      originalTitle: originalTitle ?? this.originalTitle,
+      overview: overview ?? this.overview,
+      popularity: popularity ?? this.popularity,
+      posterPath: posterPath ?? this.posterPath,
+      releaseDate: releaseDate ?? this.releaseDate,
+      title: title ?? this.title,
+      video: video ?? this.video,
+      voteAverage: voteAverage ?? this.voteAverage,
+      voteCount: voteCount ?? this.voteCount,
     );
   }
 }
