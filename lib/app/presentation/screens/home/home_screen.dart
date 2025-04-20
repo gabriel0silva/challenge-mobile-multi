@@ -4,6 +4,7 @@ import 'package:challenge_mobile_multi/app/core/constants/data.dart';
 import 'package:challenge_mobile_multi/app/core/utils/app_assets.dart';
 import 'package:challenge_mobile_multi/app/core/utils/app_colors.dart';
 import 'package:challenge_mobile_multi/app/core/utils/app_fonts.dart';
+import 'package:challenge_mobile_multi/app/data/models/movies_model.dart';
 import 'package:challenge_mobile_multi/app/presentation/states/home_state.dart';
 import 'package:challenge_mobile_multi/app/presentation/viewmodels/home_viewmodel.dart';
 import 'package:challenge_mobile_multi/app/presentation/viewmodels/locale_viewmodel.dart';
@@ -34,20 +35,18 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return DefaultScaffold(
-      body: Consumer<HomeViewModel>(builder: (context, vm, _) {
-        switch (vm.state) {
-          case HomeState.initial:
-            return const SizedBox();
-          case HomeState.loading:
-            return DefaultScaffold(body: DefaultLoading(message: l10n.translate('loading_movies')));
-          case HomeState.failure:
-            return DefaultScaffold(body: DefaultFailure(onRetry: () => vm.reloadMovies()));
-          case HomeState.success:
-            return _successWidget(l10n, vm, context);
-        }
-      }),
-    );
+    return  Consumer<HomeViewModel>(builder: (context, vm, _) {
+      switch (vm.state) {
+        case HomeState.initial:
+          return const SizedBox();
+        case HomeState.loading:
+          return DefaultScaffold(body: DefaultLoading(message: l10n.translate('loading_movies')));
+        case HomeState.failure:
+          return DefaultScaffold(body: DefaultFailure(onRetry: () => vm.reloadMovies()));
+        case HomeState.success:
+          return _successWidget(l10n, vm, context);
+      }
+    });
   }
 }
 
@@ -129,12 +128,14 @@ Widget _successWidget(AppLocalizations l10n, HomeViewModel vm, BuildContext cont
       ),
     ),
     body: SafeArea(
-      child: Column(
-        spacing: 12,
-        children: [
-          _carouselMovies(vm),
-          _listMovies(vm, l10n),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          spacing: 12,
+          children: [
+            _carouselMovies(vm),
+            _listMovies(vm, l10n),
+          ],
+        ),
       ),
     )
   );
@@ -142,68 +143,81 @@ Widget _successWidget(AppLocalizations l10n, HomeViewModel vm, BuildContext cont
 
 Widget _listMovies(HomeViewModel vm, AppLocalizations l10n) {
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16),
-    child: Column(
-      children: [
-        const SizedBox(height: 12),
-        SizedBox(
-          width: Data.width * 0.6,
-          height: 38,
-          child: TabBar(
-            controller: vm.tabController,
-            physics: const NeverScrollableScrollPhysics(),
-            indicatorSize: TabBarIndicatorSize.tab,
-            dividerColor: Colors.transparent,
-            splashBorderRadius: const BorderRadius.all(
-              Radius.circular(25),
+  padding: const EdgeInsets.symmetric(horizontal: 16),
+  child: Column(
+    children: [
+      Container(
+        padding: const EdgeInsets.only(top: 12),
+        width: Data.width * 0.6,
+        height: 48,
+        child: TabBar(
+          controller: vm.tabController,
+          physics: const NeverScrollableScrollPhysics(),
+          indicatorSize: TabBarIndicatorSize.tab,
+          dividerColor: Colors.transparent,
+          splashBorderRadius: const BorderRadius.all(
+            Radius.circular(25),
+          ),
+          indicator: const BoxDecoration(
+            gradient: AppColors.gradientBlue,
+            borderRadius: BorderRadius.all(
+              Radius.circular(4),
             ),
-            indicator: const BoxDecoration(
-              gradient: AppColors.gradientBlue,
-              borderRadius: BorderRadius.all(
-                Radius.circular(4),
+          ),
+          labelColor: AppColors.white,
+          indicatorPadding: const EdgeInsets.symmetric(horizontal: 4),
+          dividerHeight: 1,
+          unselectedLabelColor: AppColors.white,
+          labelStyle: TextStyle(
+            fontFamily: AppFonts.montserratBold,
+            fontSize: 14,
+          ),
+          padding: EdgeInsets.zero,
+          tabs: [
+            Tab(text: l10n.translate('now_playing')),
+            Tab(text: l10n.translate('up_comming')),
+          ],
+        ),
+      ),
+      const SizedBox(height: 16),
+      AnimatedBuilder(
+        animation: vm.tabController,
+        builder: (context, _) {
+          return IndexedStack(
+            index: vm.tabController.index,
+            children: [
+              Column(
+                children: List.generate(
+                  (vm.nowPlayingdMovies.length / 2).ceil(),
+                  (index) {
+                    final int firstIndex = index * 2;
+                    final int secondIndex = firstIndex + 1;
+
+                    final movie1 = vm.nowPlayingdMovies[firstIndex];
+                    final movie2 = secondIndex < vm.nowPlayingdMovies.length ? vm.nowPlayingdMovies[secondIndex] : null;
+
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _cardMovie(movie1),
+                        if (movie2 != null)...{
+                          _cardMovie(movie2)
+                        } else ...{
+                          const SizedBox(width: 0),
+                        }
+                      ],
+                    );
+                  },
+                ),
               ),
-            ),
-            labelColor: AppColors.white,
-            indicatorPadding: const EdgeInsets.symmetric(horizontal: 4),
-            dividerHeight: 1,
-            unselectedLabelColor: AppColors.white,
-            labelStyle: TextStyle(
-              fontFamily: AppFonts.montserratBold,
-              fontSize: 14,
-            ),
-            padding: EdgeInsets.zero,
-            tabs: [
-              Tab(text: l10n.translate('now_playing')),
-              Tab(text: l10n.translate('up_comming')),
+              const Text('Em breve'),
             ],
-            onTap: (value) {
-              // if (value == 0) {
-              //   widget.controller.getProductAffiliate();
-              // } else {
-              //   widget.controller.getWishListAffiliate();
-              // }
-            },
-          ),
-        ),
-        SizedBox(
-          height: 200,
-          // height: (!widget.controller.tabProductsAndListController!.indexIsChanging && !widget.controller.isLoadingLinks) 
-          //   ? widget.controller.tabProductsAndListController!.index == 0 
-          //     ? widget.controller.heightProducts 
-          //     : widget.controller.heightwishList 
-          //   : 1500,
-          child: TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: vm.tabController,
-            children: const [
-              Text('Nos cinemas'),
-              Text('Em breve'),
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
+          );
+        },
+      ),
+    ],
+  ),
+);
 }
 
 Column _carouselMovies(HomeViewModel vm) {
@@ -283,5 +297,39 @@ Column _carouselMovies(HomeViewModel vm) {
         ),
       ),
     ],
+  );
+}
+
+Widget _cardMovie(Movie movie) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0),
+    child: SizedBox(
+      width: Data.width * 0.44,
+      child: AspectRatio(
+        aspectRatio: 0.75,
+        child: CachedNetworkImage(
+          imageUrl: movie.posterPath,
+          fit: BoxFit.cover,
+          imageBuilder: (context, imageProvider) {
+            return Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          },
+          placeholder: (context, url) => Container(
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
+        ),
+      ),
+    ),
   );
 }
