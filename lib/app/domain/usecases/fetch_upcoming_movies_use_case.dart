@@ -28,7 +28,7 @@ class FetchUpcomingMoviesUseCase {
     }
   }
 
-    MoviesModel _format(MoviesModel moviesData) {
+  MoviesModel _format(MoviesModel moviesData) {
     final formattedMovies = moviesData.movies.map((movie) {
       return movie.copyWith(
         releaseDate: localeViewModel.locale.languageCode == 'pt' ? movie.releaseDate.toBrazilianDateFormat() : movie.releaseDate.toUSDateFormat(),

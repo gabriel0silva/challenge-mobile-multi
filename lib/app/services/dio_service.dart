@@ -22,13 +22,6 @@ class DioService {
         },
       ),
     );
-    //TODO QUando precisar ver os logs
-    // ..interceptors.add(
-    //     LogInterceptor(
-    //       responseBody: true,
-    //       requestBody: true,
-    //     ),
-    //   );
   })();
 
   Future<Response> get(String path, {Map<String, dynamic>? queryParameters}) {

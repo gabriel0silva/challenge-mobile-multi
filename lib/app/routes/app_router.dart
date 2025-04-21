@@ -1,6 +1,6 @@
-import 'package:challenge_mobile_multi/app/presentation/screens/details/details_screen.dart';
-import 'package:challenge_mobile_multi/app/presentation/screens/home/home_screen.dart';
-import 'package:challenge_mobile_multi/app/presentation/screens/splash/splash_screen.dart';
+import 'package:challenge_mobile_multi/app/presentation/screens/details_screen.dart';
+import 'package:challenge_mobile_multi/app/presentation/screens/home_screen.dart';
+import 'package:challenge_mobile_multi/app/presentation/screens/splash_screen.dart';
 import 'package:challenge_mobile_multi/app/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 

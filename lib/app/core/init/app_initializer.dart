@@ -14,8 +14,6 @@ class AppInitializer {
     try {
       final start = DateTime.now();
 
-      // await _authRepository.fetchGuestToken();
-
       final configurations = await _authRepository.fetchApiConfigurations();
       if (configurations != null) {
         Data.appConfig = configurations;

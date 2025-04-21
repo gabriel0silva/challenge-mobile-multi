@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 class AppTheme {
   static final ThemeData themeData = ThemeData(
     colorScheme: ColorScheme.fromSeed(seedColor: AppColors.white),
-    useMaterial3: true,
-    
+    useMaterial3: true, 
   );
 }

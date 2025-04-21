@@ -21,7 +21,6 @@ class AppColors {
 
   static const LinearGradient gradientBlue = LinearGradient(colors: [AppColors.blue, AppColors.blue1]);
   static const LinearGradient gradientPurple = LinearGradient(colors: [AppColors.purple, AppColors.blue2], begin: Alignment.topCenter, end: Alignment.bottomCenter);
-  static const LinearGradient gradientwhite = LinearGradient(colors: [AppColors.white, AppColors.gray3]);
 
   static const Color green = Color(0xFF008f30);
   static const Color blue3 = Color(0xFF00c9fd);

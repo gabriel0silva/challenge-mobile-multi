@@ -7,7 +7,6 @@ class AppAssets {
   static const String svgIconLocation = 'assets/icons/location.svg';
 
   // Images
-  static const String svgBackground = 'assets/images/background.svg';
   static const String pngBackground = 'assets/images/background.png';
   static const String spashAnimation = 'assets/lottie/spash_animation.json';
 }

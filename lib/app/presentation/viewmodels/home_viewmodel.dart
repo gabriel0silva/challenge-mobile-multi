@@ -25,6 +25,7 @@ class HomeViewModel extends ChangeNotifier {
   HomeState homeState = HomeState.initial;
 
   bool isLoadingMore = false;
+  bool isLoadingData = false;
 
   late TabController tabController;
 
@@ -36,7 +37,13 @@ class HomeViewModel extends ChangeNotifier {
 
   int nowPlayingdMoviesTotalPages = 0;
   int nowPlayingdMoviesCurrentPage = 1;
-  bool get hasMoreItemsNowPlayingdMovies => nowPlayingdMoviesCurrentPage >= nowPlayingdMoviesCurrentPage;
+  bool get hasMoreItemsNowPlayingMovies => nowPlayingdMoviesCurrentPage >= nowPlayingdMoviesCurrentPage;
+
+  int upcomingMoviesTotalPages = 0;
+  int upcomingMoviesCurrentPage = 1;
+  bool get hasMoreItemsUpcomingMovies => nowPlayingdMoviesCurrentPage >= nowPlayingdMoviesCurrentPage;
+
+  int get actualIndexTabBar => tabController.index;
 
   final topRatedMoviesController = PageController(initialPage: 3);
 
@@ -52,20 +59,33 @@ class HomeViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void emitHomeState(HomeState newState) {
+  void _emitHomeState(HomeState newState) {
     homeState = newState;
     notifyListeners();
   }
 
-  void emitLoadMore(bool value) {
+  void _emitLoadMore(bool value) {
     isLoadingMore = value;
     notifyListeners();
+  }
+
+  void _emitLoadData(bool value) {
+    isLoadingData = value;
+    notifyListeners();
+  }
+
+  Future<void> _loadMore() async {
+    if (actualIndexTabBar == 0) {
+      _loadMoreNowPlayingMovies();
+    } else {
+      _loadMoreUpcomingMovies();
+    }
   }
 
   Future<void> _loadMoreNowPlayingMovies() async {
     if (isLoadingMore || nowPlayingdMoviesCurrentPage >= nowPlayingdMoviesTotalPages) return;
 
-    emitLoadMore(true);
+    _emitLoadMore(true);
 
     nowPlayingdMoviesCurrentPage++;
 
@@ -73,7 +93,22 @@ class HomeViewModel extends ChangeNotifier {
 
     if (result != null) {
       nowPlayingdMovies.addAll(result.movies);
-      emitLoadMore(false);
+      _emitLoadMore(false);
+    }
+  }
+
+  Future<void> _loadMoreUpcomingMovies() async {
+    if (isLoadingMore || upcomingMoviesCurrentPage >= upcomingMoviesTotalPages) return;
+
+    _emitLoadMore(true);
+
+    upcomingMoviesCurrentPage++;
+
+    final result = await useCaseUpcoming(page: upcomingMoviesCurrentPage);
+
+    if (result != null) {
+      upComingMovies.addAll(result.movies);
+      _emitLoadMore(false);
     }
   }
 
@@ -89,10 +124,10 @@ class HomeViewModel extends ChangeNotifier {
     final maxScroll = scrollController.position.maxScrollExtent;
     final currentScroll = scrollController.position.pixels;
 
-    const threshold = 0; // distância do final pra começar a carregar
+    const threshold = 0;
 
-    if (maxScroll - currentScroll <= threshold && !isLoadingMore && hasMoreItemsNowPlayingdMovies) {
-      _loadMoreNowPlayingMovies(); // sua função de carregar mais
+    if (maxScroll - currentScroll <= threshold && !isLoadingMore && hasMoreItemsNowPlayingMovies) {
+      _loadMore();
     }
   }
 
@@ -110,32 +145,22 @@ class HomeViewModel extends ChangeNotifier {
 
     if (isSuccess) {
       _initAddListener();
-      emitHomeState(HomeState.success);
+      _emitHomeState(HomeState.success);
     } else {
-      emitHomeState(HomeState.failure);
+      _emitHomeState(HomeState.failure);
     }
   }
 
   Future<void> reloadMovies() async {
-    try {
-      emitHomeState(HomeState.loading);
+    _emitHomeState(HomeState.loading);
 
-      final isSuccess = await _loadData();
+    final isSuccess = await _loadData();
 
-      if (isSuccess) {
-        emitHomeState(HomeState.success);
-      } else {
-        emitHomeState(HomeState.failure);
-      }
-      
-    } catch (e) {
-      emitHomeState(HomeState.failure);
-      debugPrint('Error reloadMovies() =>: $e');
+    if (isSuccess) {
+      _emitHomeState(HomeState.success);
+    } else {
+      _emitHomeState(HomeState.failure);
     }
-  }
-
-  void _fillVariablesForPagination(MoviesModel movies) {
-
   }
 
   Future<bool> _loadData() async {
@@ -145,17 +170,41 @@ class HomeViewModel extends ChangeNotifier {
 
     return isSuccess;
   }
+
+  Future<void> fetchNowPlayingMovies() async {
+    _emitLoadData(true);
+    final result = await useCaseNowPlaying();
+
+    if (result != null) {
+      nowPlayingdMoviesTotalPages = result.totalPages;
+      nowPlayingdMovies = result.movies;
+      upComingMovies.clear();
+      _emitLoadData(false);
+    } 
+  }
+
+  Future<void> fetchUpcomingMovies() async {
+    _emitLoadData(true);
+    final result = await useCaseUpcoming();
+
+    if (result != null) {
+      upcomingMoviesTotalPages = result.totalPages;
+      upComingMovies = result.movies;
+      nowPlayingdMovies.clear();
+      _emitLoadData(false);
+    } 
+  }
  
   Future<void> changeLanguage(String value) async {
-    emitHomeState(HomeState.loading);
+    _emitHomeState(HomeState.loading);
 
     final isSuccess = await _loadData();
     selectedValue = value;
 
     if (isSuccess) {
-      emitHomeState(HomeState.success);
+      _emitHomeState(HomeState.success);
     } else {
-      emitHomeState(HomeState.failure);
+      _emitHomeState(HomeState.failure);
     }
   }
 
@@ -163,6 +212,7 @@ class HomeViewModel extends ChangeNotifier {
     if (moviesResult == null) return false;
 
     nowPlayingdMoviesTotalPages = moviesResult.nowPlaying.totalPages;
+    upcomingMoviesTotalPages = moviesResult.upcoming.totalPages;
 
     topRatedMovies = moviesResult.topRated.movies;
     nowPlayingdMovies = moviesResult.nowPlaying.movies;

@@ -13,23 +13,19 @@ import 'package:challenge_mobile_multi/app/presentation/viewmodels/home_viewmode
 import 'package:challenge_mobile_multi/app/presentation/viewmodels/locale_viewmodel.dart';
 import 'package:challenge_mobile_multi/app/presentation/viewmodels/splash_screen_viewmodel.dart';
 import 'package:challenge_mobile_multi/app/services/dio_service.dart';
-import 'package:challenge_mobile_multi/app/services/token_storage_service.dart';
 import 'package:challenge_mobile_multi/app/services/translation_service.dart';
 import 'package:get_it/get_it.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final getIt = GetIt.instance;
 
-void initDependencies(SharedPreferences sharedPrefs) {
+void initDependencies() {
   getIt.registerLazySingleton<DioService>(() => DioService());
-  getIt.registerLazySingleton<TokenStorageService>(() => TokenStorageService(sharedPrefs));
   getIt.registerLazySingleton(() => LocaleViewModel());
   getIt.registerSingleton<TranslationService>(TranslationService());
   getIt.registerLazySingleton<MoviesRepository>(() => MoviesRepositoryImpl(getIt<DioService>(),));
   getIt.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
       getIt<DioService>(),
-      getIt<TokenStorageService>(),
     ),
   );
   getIt.registerLazySingleton(() => AppInitializer(getIt<AuthRepository>()));
