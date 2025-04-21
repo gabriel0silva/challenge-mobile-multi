@@ -1,6 +1,8 @@
+import 'package:challenge_mobile_multi/app/core/init/app_initializer.dart';
 import 'package:challenge_mobile_multi/app/data/models/movies_model.dart';
 import 'package:challenge_mobile_multi/app/di/injection.dart';
 import 'package:challenge_mobile_multi/app/domain/entities/movies_result.dart';
+import 'package:challenge_mobile_multi/app/domain/repositories/auth_repository.dart';
 import 'package:challenge_mobile_multi/app/domain/usecases/fetch_all_movies_use_case.dart';
 import 'package:challenge_mobile_multi/app/domain/usecases/fetch_now_playing_movies_use_case.dart';
 import 'package:challenge_mobile_multi/app/domain/usecases/fetch_upcoming_movies_use_case.dart';
@@ -21,6 +23,7 @@ class HomeViewModel extends ChangeNotifier {
   });
 
   final LocaleViewModel localeViewModel = getIt<LocaleViewModel>();
+  final AppInitializer _appInitializer = getIt<AppInitializer>();
 
   HomeState homeState = HomeState.initial;
 
@@ -153,6 +156,8 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<void> reloadMovies() async {
     _emitHomeState(HomeState.loading);
+
+    await _appInitializer.fetchApiConfigurations();
 
     final isSuccess = await _loadData();
 

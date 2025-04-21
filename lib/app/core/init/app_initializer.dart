@@ -14,10 +14,7 @@ class AppInitializer {
     try {
       final start = DateTime.now();
 
-      final configurations = await _authRepository.fetchApiConfigurations();
-      if (configurations != null) {
-        Data.appConfig = configurations;
-      }
+      await fetchApiConfigurations();
 
       await homeVM.init();
 
@@ -29,6 +26,14 @@ class AppInitializer {
       }
     } catch (e) {
       debugPrint('Erro ao inicializar o app: $e');
+    }
+  }
+
+  Future<void> fetchApiConfigurations() async {
+    final configurations = await _authRepository.fetchApiConfigurations();
+
+    if (configurations != null) {
+      Data.appConfig = configurations;
     }
   }
 }
