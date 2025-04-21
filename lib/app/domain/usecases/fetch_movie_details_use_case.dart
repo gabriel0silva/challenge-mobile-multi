@@ -34,7 +34,7 @@ class FetchMovieDetailsUseCase {
       certification: movieDetails.certification.contains('L') ? movieDetails.certification : '+${movieDetails.certification}',
       originCountry: fullCountryName,
       overview: movieDetails.overview.isEmpty ? '[...]' : movieDetails.overview,
-      backdropPath: Functions.createValidImageUrl(movieDetails.backdropPath, Data.appConfig.imageSizes.backdrop.original),
+      backdropPath: Functions.createValidImageUrl(movieDetails.backdropPath, Data.appConfig.imageSizes!.backdrop.original),
       voteAverage: movieDetails.voteAverage.toOneDecimalDouble(),
       budgetformatted: movieDetails.budget.toDouble().toCurrencyFormat(localeViewModel.locale),
       releaseDate: localeViewModel.locale.languageCode == 'pt' ? movieDetails.releaseDate.toBrazilianDateFormat() : movieDetails.releaseDate.toUSDateFormat(),

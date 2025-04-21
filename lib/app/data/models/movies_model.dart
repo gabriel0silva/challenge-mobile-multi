@@ -13,10 +13,10 @@ class MoviesModel {
 
   factory MoviesModel.fromJson(Map<String, dynamic> json) {
     return MoviesModel(
-      page: json['page'],
+      page: json['page'] ?? 0,
       movies: (json['results'] as List).map((movie) => Movie.fromJson(movie)).toList(),
-      totalPages: json['total_pages'],
-      totalResults: json['total_results'],
+      totalPages: json['total_pages'] ?? 0,
+      totalResults: json['total_results'] ?? 0,
     );
   }
 
@@ -70,20 +70,20 @@ class Movie {
 
   factory Movie.fromJson(Map<String, dynamic> json) {
     return Movie(
-      adult: json['adult'],
+      adult: json['adult'] ?? false,
       backdropPath: json['backdrop_path'] ?? '',
       genreIds: List<int>.from(json['genre_ids']),
-      id: json['id'],
-      originalLanguage: json['original_language'],
-      originalTitle: json['original_title'],
-      overview: json['overview'],
-      popularity: (json['popularity'] as num).toDouble(),
+      id: json['id'] ?? 0,
+      originalLanguage: json['original_language'] ?? '',
+      originalTitle: json['original_title'] ?? '',
+      overview: json['overview'] ?? '',
+      popularity: json['popularity'] != null ? (json['popularity'] as num).toDouble() : 0.0,
       posterPath: json['poster_path'] ?? '',
-      releaseDate: json['release_date'],
-      title: json['title'],
-      video: json['video'],
-      voteAverage: (json['vote_average'] as num).toDouble(),
-      voteCount: json['vote_count'],
+      releaseDate: json['release_date'] ?? '',
+      title: json['title'] ?? '',
+      video: json['video'] ?? false,
+      voteAverage: json['vote_average'] != null ? (json['vote_average'] as num).toDouble() : 0.0,
+      voteCount: json['vote_count'] ?? 0,
     );
   }
 

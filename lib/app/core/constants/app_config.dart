@@ -2,11 +2,11 @@ import 'package:challenge_mobile_multi/app/core/constants/poster_sizes.dart';
 
 class AppConfig {
   String imageBaseUrl;
-  ImageSizes imageSizes;
+  ImageSizes? imageSizes;
 
   AppConfig({
     required this.imageBaseUrl,
-    required this.imageSizes,
+    this.imageSizes,
   });
 
   factory AppConfig.fromJson(Map<String, dynamic> json) {

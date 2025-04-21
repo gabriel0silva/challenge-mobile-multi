@@ -166,7 +166,7 @@ class HomeViewModel extends ChangeNotifier {
   Future<bool> _loadData() async {
     final moviesResult = await useCaseAllMovies();
 
-    final isSuccess = _fillOutMovieLists(moviesResult);
+    final isSuccess = fillOutMovieLists(moviesResult);
 
     return isSuccess;
   }
@@ -208,7 +208,7 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
-  bool _fillOutMovieLists(MoviesResult? moviesResult) {
+  bool fillOutMovieLists(MoviesResult? moviesResult) {
     if (moviesResult == null) return false;
 
     nowPlayingdMoviesTotalPages = moviesResult.nowPlaying.totalPages;

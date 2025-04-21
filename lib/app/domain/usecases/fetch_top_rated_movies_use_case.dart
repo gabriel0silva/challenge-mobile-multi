@@ -35,11 +35,11 @@ class FetchTopRatedMoviesUseCase {
         voteAverage: movie.voteAverage.toOneDecimalDouble(),
         backdropPath: Functions.createValidImageUrl(
           movie.backdropPath,
-          Data.appConfig.imageSizes.backdrop.original,
+          Data.appConfig.imageSizes!.backdrop.original,
         ),
         posterPath: Functions.createValidImageUrl(
           movie.posterPath,
-          Data.appConfig.imageSizes.poster.original,
+          Data.appConfig.imageSizes!.poster.original,
         ),
       );
     }).toList();
