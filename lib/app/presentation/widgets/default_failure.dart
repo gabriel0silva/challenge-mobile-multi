@@ -5,12 +5,10 @@ import 'package:challenge_mobile_multi/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class DefaultFailure extends StatelessWidget {
-  final String? message;
   final VoidCallback onRetry;
 
   const DefaultFailure({
     super.key,
-    this.message,
     required this.onRetry,
   });
 
@@ -31,7 +29,7 @@ class DefaultFailure extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Text(
-              'Opa, algo deu errado!',
+              l10n.translate('title_failure'),
               style: TextStyle(
                 fontSize: 22,
                 color: AppColors.white,
@@ -41,7 +39,7 @@ class DefaultFailure extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              message ?? 'Não conseguimos carregar os dados. Verifique sua conexão ou tente novamente.',
+              l10n.translate('message_failure'),
               style: TextStyle(
                 fontSize: 16,
                 color: AppColors.gray,

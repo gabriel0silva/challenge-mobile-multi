@@ -14,5 +14,8 @@
     "try_again": "Try again",
     "loading": "Loading...",
     "loading_movies": "Loading movies...",
-    "loading_details": "Loading details..."
+    "loading_details": "Loading details...",
+    "title_failure": "Oops, something went wrong!",
+    "message_failure": "We were unable to load the data. Please check your connection or try again.",
+    "message_movie_empty": "No movies available at this time."
 }

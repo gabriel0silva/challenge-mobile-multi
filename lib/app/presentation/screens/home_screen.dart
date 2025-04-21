@@ -152,7 +152,7 @@ Widget tabView(List<Movie> movies, bool isLoadingMore, AppLocalizations l10n, Bu
           const Icon(Icons.movie_filter_outlined, size: 48, color: AppColors.gray),
           const SizedBox(height: 8),
           Text(
-            'Nenhum filme disponível no momento.',
+            l10n.translate('message_movie_empty'),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,

@@ -14,5 +14,8 @@
     "try_again": "Tentar novamente",
     "loading": "Carregando...",
     "loading_movies": "Carregando filmes...",
-    "loading_details": "Carregando detalhes..."
+    "loading_details": "Carregando detalhes...",
+    "title_failure": "Opa, algo deu errado!",
+    "message_failure": "Não conseguimos carregar os dados. Verifique sua conexão ou tente novamente.",
+    "message_movie_empty": "Nenhum filme disponível no momento."
 }
