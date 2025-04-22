@@ -1,10 +1,10 @@
-import 'package:challenge_mobile_multi/app/core/extensions/extencion_double.dart';
+import 'package:challenge_mobile_multi/app/core/extensions/extension_double.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  group('ExtencionDouble', () {
+  group('ExtensionDouble', () {
     test(
       'toOneDecimalDouble() should return the number with 1 decimal place', 
       () {

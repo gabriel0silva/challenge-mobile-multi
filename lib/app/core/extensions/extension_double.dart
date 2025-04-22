@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-extension ExtencionDouble on double {
+extension ExtensionDouble on double {
 
   // Retorna o número com 1 casas decimais como double
   double toOneDecimalDouble() {

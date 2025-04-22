@@ -1,6 +1,6 @@
 import 'package:challenge_mobile_multi/app/core/constants/data.dart';
-import 'package:challenge_mobile_multi/app/core/extensions/extencion_double.dart';
 import 'package:challenge_mobile_multi/app/core/extensions/extencion_string.dart';
+import 'package:challenge_mobile_multi/app/core/extensions/extension_double.dart';
 import 'package:challenge_mobile_multi/app/core/utils/functions.dart';
 import 'package:challenge_mobile_multi/app/data/models/movies_model.dart';
 import 'package:challenge_mobile_multi/app/di/injection.dart';

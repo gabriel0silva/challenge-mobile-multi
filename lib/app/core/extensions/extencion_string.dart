@@ -1,4 +1,4 @@
-extension ExtencionString on String {
+extension ExtensionString on String {
   /// Converte de "yyyy-MM-dd" para "dd/MM/yyyy"
   String toBrazilianDateFormat() {
     try {
