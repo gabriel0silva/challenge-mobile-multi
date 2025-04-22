@@ -125,7 +125,7 @@ Este aplicativo está disponível para **Android** e **iOS**, e foi testado com 
 ### 🔗 Instalação Android
 Você pode baixar e instalar o APK diretamente em um dispositivo Android:
 
-- [🔽 Download APK](./releases/app-release.apk)
+- [🔽 Download APK](https://github.com/gabriel0silva/challenge-mobile-multi/releases/tag/challenge-mobile-multi)
 
 > ⚠️ Certifique-se de permitir a instalação de apps de fontes desconhecidas no seu dispositivo Android para conseguir instalar o APK.
 
